@@ -9,23 +9,55 @@
 <body>
     <div class="container">
         <h2 style="color:black;font-family:Open Sans;">Private Note</h2>
-        
-        <!-- Your other content here -->
 
         <form method="POST" action="/add_note">
             <label for="new_note">New Note:</label>
-            <input type="text" id="new_note" name="new_note" required>
+            <textarea id="new_note" name="new_note" required style="overflow-y: hidden;" oninput="autoResize(this)" onkeydown="handleKeyPress(event)"></textarea>
             <button type="submit">Add Note</button>
-        </form>
+        </form>        
         
         <ul>
             {% for note in notes %}
                 <li>
-                    {{ note }}
+                    <li>{{ note }}</li>                    
                     <a href="{{ url_for('delete_note', index=loop.index0) }}">Delete</a>
                 </li>
             {% endfor %}
-        </ul>
+        </ul>        
     </div>
+
+    <script>
+        function autoResize(textarea) {
+            // Set tinggi textarea agar dapat menampung semua isi tanpa scroll
+            textarea.style.height = 'auto';
+    
+            // Set tinggi textarea berdasarkan scrollHeight atau tinggi kontainer, yang lebih kecil
+            textarea.style.height = (Math.min(textarea.scrollHeight, textarea.parentNode.clientHeight)) + 'px';
+    
+            // Atur nilai textarea kembali ke tinggi minimum jika tinggi textarea saat ini lebih besar dari tinggi kontainer
+            if (textarea.scrollHeight > textarea.parentNode.clientHeight) {
+                textarea.style.height = textarea.scrollHeight + 'px';
+            }
+        }
+    
+        function handleKeyPress(event) {
+            // Jika tombol yang ditekan adalah Enter dan Shift ditekan bersamaan, tambahkan newline
+            if (event.key === 'Enter' && event.shiftKey) {
+                // Mengganti Enter dengan karakter newline
+                let textarea = document.getElementById('new_note');
+                let cursorPosition = textarea.selectionStart;
+                let textBefore = textarea.value.substring(0, cursorPosition);
+                let textAfter = textarea.value.substring(cursorPosition);
+    
+                textarea.value = textBefore + '\n' + textAfter;
+    
+                // Mencegah event default agar Enter tidak membuat baris baru
+                event.preventDefault();
+    
+                // Memanggil fungsi autoResize untuk memperbarui tinggi textarea
+                autoResize(textarea);
+            }
+        }
+    </script>    
 </body>
 </html>

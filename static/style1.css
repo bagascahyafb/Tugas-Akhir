@@ -47,3 +47,10 @@ a {
     text-decoration: none;
     margin-left: 10px;
 }
+
+textarea {
+    width: 100%; 
+    max-width: 100%; 
+    box-sizing: border-box; /* Pastikan padding dan border tidak menambah lebar */
+    overflow-y: hidden; /* Sembunyikan scrollbar vertikal */
+}
